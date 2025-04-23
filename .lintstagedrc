@@ -1,0 +1,4 @@
+ {
+    "*.(t|j)s": ["prettier --list-different"],
+    "*.md": "prettier --list-different"
+}

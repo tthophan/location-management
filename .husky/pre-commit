@@ -1,0 +1,4 @@
+# .husky/pre-commit
+yarn test
+yarn format
+npx lint-staged --allow-empty
