@@ -19,6 +19,7 @@ import { DatabaseModule } from './modules/databases';
 import { HealthModule } from './modules/health';
 import { LocationModule } from './modules/location';
 import { Logger } from './modules/loggers';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -50,8 +51,8 @@ import { Logger } from './modules/loggers';
       imports: [ConfigModule],
       inject: [ConfigService],
     }),
-    LocationModule,
     DatabaseModule,
+    LocationModule,
   ],
   controllers: [],
   providers: [

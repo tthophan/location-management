@@ -1,14 +1,13 @@
 import {
-  Entity,
-  Tree,
-  PrimaryGeneratedColumn,
   Column,
-  TreeChildren,
-  TreeParent,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  JoinColumn,
 } from 'typeorm';
 
-@Entity()
-@Tree('materialized-path')
+@Entity('locations')
 export class Location {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,6 +16,11 @@ export class Location {
   name: string;
 
   @Column()
+  description: string;
+
+  @Column({
+    name: 'location_number',
+  })
   locationNumber: string;
 
   @Column()
@@ -25,9 +29,20 @@ export class Location {
   @Column('float')
   area: number;
 
-  @TreeChildren()
+  @Column({ name: 'parent_id', nullable: true })
+  parentId: number;
+
+  @ManyToOne((_) => Location, (location) => location.children)
+  @JoinColumn({ name: 'parent_id' })
+  parent: Location;
+
+  @OneToMany((_) => Location, (location) => location.parent)
   children: Location[];
 
-  @TreeParent()
-  parent: Location;
+  @Column()
+  level: number;
+
+  constructor(entity: Partial<Location>) {
+    Object.assign(this, entity);
+  }
 }

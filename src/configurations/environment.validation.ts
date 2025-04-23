@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Max, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 import { LogLevel } from 'typeorm';
 import { Environment } from './validation';
 
@@ -8,29 +8,37 @@ export class EnvironmentVariables {
   @Max(65535)
   PORT: number;
 
+  @IsOptional()
   @IsString()
-  TZ: string;
+  TZ?: string;
 
+  @IsOptional()
   @IsString()
-  ENVIRONMENT: Environment;
+  ENVIRONMENT?: Environment;
 
+  @IsOptional()
   @IsString()
-  LOG_LEVEL: LogLevel;
+  LOG_LEVEL?: LogLevel;
 
+  @IsOptional()
   @IsString()
-  DATABASE_HOST: string;
+  DATABASE_HOST?: string;
 
+  @IsOptional()
   @IsNumber()
   @Min(0)
   @Max(65535)
-  DATABASE_PORT: number;
+  DATABASE_PORT?: number;
 
+  @IsOptional()
   @IsString()
-  DATABASE_USERNAME: string;
+  DATABASE_USERNAME?: string;
 
+  @IsOptional()
   @IsString()
-  DATABASE_PASSWORD: string;
+  DATABASE_PASSWORD?: string;
 
+  @IsOptional()
   @IsString()
-  DATABASE_NAME: string;
+  DATABASE_NAME?: string;
 }

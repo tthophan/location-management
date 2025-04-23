@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { Environment } from './configurations';
 import { Logger } from './modules/loggers';
 import { setupSwagger } from './docs';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
   const startBoootstrapTime = performance.now();
@@ -16,6 +17,12 @@ async function bootstrap() {
     logger: new Logger(),
   });
 
+  app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1.0',
+    prefix: 'v',
+  });
   const logger = app.get(Logger);
   app.useLogger(logger);
   app.use(

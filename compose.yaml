@@ -12,27 +12,51 @@ services:
     build:
       context: .
     environment:
-      ENVIRONMENT: production
+      ENVIRONMENT: development
       DATABASE_HOST: db
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      DATABASE_NAME: ${DATABASE_NAME:-postgres}
+      DATABASE_PORT: ${DATABASE_PORT:-5432}
+      TZ: Asia/Ho_Chi_Minh
+      LOG_LEVEL: info
       PORT: 80
+      
     ports:
-      - 80:80
+      - 8900:80
     depends_on:
       db:
         condition: service_healthy
-    env_file:
-      - .env
-    # command: ["sleep", "1000"]
-  
+      migration:
+        condition: service_completed_successfully
+  migration:
+    build:
+      context: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: production
+      DATABASE_HOST: db
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-postgres}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      DATABASE_NAME: ${DATABASE_NAME:-postgres}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        npx typeorm-ts-node-commonjs migration:run  -d ./dist/src/modules/databases/data-source.js
+        echo "migration completed"
+        exit 0
   db:
     image: postgres:latest
     user: postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=${DATABASE_USERNAME}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DB=${DATABASE_NAME}
+      - POSTGRES_USER=${DATABASE_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-postgres}
+      - POSTGRES_DB=${DATABASE_NAME:-postgres}
     ports:
       - 5432:5432
     healthcheck:
